@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerenciador OS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="brand">Gerenciador OS</div>
+      <div>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('main.index') }}">Ordens</a>
+          <a href="{{ url_for('main.new_order') }}">Nova OS</a>
+          <a href="{{ url_for('main.logout') }}">Sair</a>
+        {% else %}
+          <a href="{{ url_for('main.login') }}">Entrar</a>
+          <a href="{{ url_for('main.register') }}">Cadastrar</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <main class="container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flash-list">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

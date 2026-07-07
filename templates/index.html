@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="page-header">
+    <h2>Ordens de Serviço</h2>
+    <a class="button" href="{{ url_for('main.new_order') }}">Nova OS</a>
+  </div>
+
+  <div class="summary-card card">
+    <div class="summary-header">
+      <h3>Resumo por status</h3>
+      <p>Total de ordens: {{ total_orders }}</p>
+    </div>
+    <div class="report-list">
+      {% for status_name, report in status_report.items() %}
+        <div class="report-item">
+          <div class="report-info">
+            <span>{{ status_name }}</span>
+            <strong>{{ report.count }} ({{ report.percentage }}%)</strong>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" data-percentage="{{ report.percentage }}"></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <form class="filter-form card" method="get">
+    <label for="status">Filtrar por status</label>
+    <div class="filter-controls">
+      <select id="status" name="status">
+        <option value="" {% if not selected_status %}selected{% endif %}>Todos</option>
+        <option value="Aberta" {% if selected_status == 'Aberta' %}selected{% endif %}>Aberta</option>
+        <option value="Em andamento" {% if selected_status == 'Em andamento' %}selected{% endif %}>Em andamento</option>
+        <option value="Concluída" {% if selected_status == 'Concluída' %}selected{% endif %}>Concluída</option>
+      </select>
+      <button type="submit">Aplicar</button>
+    </div>
+  </form>
+
+  {% if orders %}
+    <div class="orders-grid">
+      {% for order in orders %}
+        <div class="card order-card">
+          <div class="order-top">
+            <h3>{{ order.title }}</h3>
+            <span class="status">{{ order.status }}</span>
+          </div>
+          <p><strong>Cliente:</strong> {{ order.client }}</p>
+          <p>{{ order.description }}</p>
+          <div class="actions">
+            <a class="button secondary" href="{{ url_for('main.edit_order', order_id=order.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('main.delete_order_route', order_id=order.id) }}" style="display:inline;">
+              <button type="submit" class="button danger">Excluir</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card">
+      <p>Nenhuma ordem cadastrada ainda.</p>
+    </div>
+  {% endif %}
+
+  <script>
+    document.querySelectorAll('.progress-fill').forEach(el => {
+      const percentage = el.dataset.percentage;
+      el.style.width = percentage + '%';
+    });
+  </script>
+{% endblock %}

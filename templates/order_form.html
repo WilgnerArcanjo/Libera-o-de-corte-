@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <h2>{% if order %}Editar Ordem{% else %}Nova Ordem{% endif %}</h2>
+    <form method="post">
+      <label>Título</label>
+      <input type="text" name="title" value="{{ order.title if order else '' }}" required>
+
+      <label>Cliente</label>
+      <input type="text" name="client" value="{{ order.client if order else '' }}" required>
+
+      <label>Descrição</label>
+      <textarea name="description" rows="4" required>{{ order.description if order else '' }}</textarea>
+
+      <label>Status</label>
+      <select name="status">
+        <option value="Aberta" {% if order and order.status == 'Aberta' %}selected{% endif %}>Aberta</option>
+        <option value="Em andamento" {% if order and order.status == 'Em andamento' %}selected{% endif %}>Em andamento</option>
+        <option value="Concluída" {% if order and order.status == 'Concluída' %}selected{% endif %}>Concluída</option>
+      </select>
+
+      <button type="submit">Salvar</button>
+    </form>
+  </div>
+{% endblock %}
